@@ -102,11 +102,13 @@ python manage.py migrate
 
 ## 5. Run the development server
 
-python manage.py runserver```
+python manage.py runserver 
+
+```
 
 
 
-
+---
 
 
 🔐 Authentication
@@ -115,7 +117,7 @@ python manage.py runserver```
 - DELETE and PUT operations on books require authentication and are restricted to staff/admin users.
 - Authentication system is DRF-ready (token-based or session-based login support).
 
-
+---
 
 🔗 API Endpoints
 
@@ -140,6 +142,8 @@ python manage.py runserver```
 | `/books/<id>/`           | `PUT/PATCH` | Update a book                          | ✅ Yes (Auth)  |
 
 
+---
+
 
 📌Filtering, Search, and Ordering
 
@@ -154,14 +158,14 @@ You can use the following query params on /books/:
 ?ordering=-title → descending by title
 ?published\\\\\\\\\\\\\\\_date=2001 → exact match filter
 
-
+---
 
 🧑‍💻 Author
 
 Atharva Zalkikar
 GitHub
 
-
+---
 
 📍 Roadmap
 
