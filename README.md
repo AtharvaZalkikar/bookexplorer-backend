@@ -62,7 +62,7 @@ cd bookexplorer-backend
 
 python -m venv venv
 
-source venv/bin/activate  # On Windows: venv\\\\Scripts\\\\activate
+source venv/bin/activate  # On Windows: venv\\\\\\\\Scripts\\\\\\\\activate
 
 
 
@@ -83,18 +83,20 @@ python manage.py migrate
 python manage.py runserver
 
 
-
-\*\*🔐 Authentication\*\*
-
+###
 
 
-\* All GET and POST endpoints are publicly accessible.
-\* DELETE and PUT operations on books require authentication and are restricted to staff/admin users.
-\* Authentication system is DRF-ready (token-based or session-based login support).
+\\\*\\\*🔐 Authentication\\\*\\\*
 
 
 
-🔗 \*\*API Endpoints\*\*
+\\\* All GET and POST endpoints are publicly accessible.
+\\\* DELETE and PUT operations on books require authentication and are restricted to staff/admin users.
+\\\* Authentication system is DRF-ready (token-based or session-based login support).
+
+
+
+🔗 \\\*\\\*API Endpoints\\\*\\\*
 
 
 
@@ -118,7 +120,7 @@ python manage.py runserver
 
 
 
-📌 \*\*Filtering, Search, and Ordering\*\*
+📌 \\\*\\\*Filtering, Search, and Ordering\\\*\\\*
 
 
 
@@ -126,30 +128,31 @@ You can use the following query params on /books/:
 
 
 
-\* ?search=tolkien → matches title or author
-\* ?ordering=published\\\_date → ascending
-\* ?ordering=-title → descending by title
-\* ?published\\\_date=2001 → exact match filter
+\\\* ?search=tolkien → matches title or author
+\\\* ?ordering=published\\\\\\\_date → ascending
+\\\* ?ordering=-title → descending by title
+\\\* ?published\\\\\\\_date=2001 → exact match filter
 
 
 
-\*\*🧑‍💻 Author\*\*
+\\\*\\\*🧑‍💻 Author\\\*\\\*
 
-\*\*Atharva Zalkikar\*\*
+\\\*\\\*Atharva Zalkikar\\\*\\\*
 
-\[GitHub](https://github.com/AtharvaZalkikar/bookexplorer-backend)
-
-
+\\\[GitHub](https://github.com/AtharvaZalkikar/bookexplorer-backend)
 
 
 
 
 
-\*\*📍 Roadmap\*\*
 
-\* ✅ Backend API completed with testing
-\* 🎨 React / Tailwind frontend integration (up next!)
-\* 🌐 Deployment to global server
+
+\\\*\\\*📍 Roadmap\\\*\\\*
+
+\\\* ✅ Backend API completed with testing
+\\\* 🎨 React / Tailwind frontend integration (up next!)
+\\\* 🌐 Deployment to global server
+
 
 
 
