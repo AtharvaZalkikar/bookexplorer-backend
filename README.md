@@ -1,4 +1,4 @@
-\# 📚 BookExplorer API
+\# 📚 **BookExplorer API**
 
 
 
@@ -10,7 +10,7 @@ BookExplorer is a Django REST Framework (DRF)-powered backend project that allow
 
 
 
-\## 🚀 Features
+\## 🚀 **Features**
 
 
 
@@ -32,7 +32,7 @@ BookExplorer is a Django REST Framework (DRF)-powered backend project that allow
 
 
 
-\## 🛠 Tech Stack
+\## 🛠 **Tech Stack**
 
 
 
@@ -54,7 +54,7 @@ Insomnia/Postman/React-compatible API
 
 
 
-\## ⚙️ Getting Started
+\## ⚙️ **Getting Started**
 
 
 
@@ -111,7 +111,7 @@ python manage.py runserver
 ---
 
 
-🔐 Authentication
+🔐 **Authentication**
 
 - All GET and POST endpoints are publicly accessible.
 - DELETE and PUT operations on books require authentication and are restricted to staff/admin users.
@@ -119,7 +119,7 @@ python manage.py runserver
 
 ---
 
-🔗 API Endpoints
+**🔗 API Endpoints**
 
 
 
@@ -145,7 +145,7 @@ python manage.py runserver
 ---
 
 
-📌Filtering, Search, and Ordering
+##📌**Filtering, Search, and Ordering**
 
 
 
@@ -153,14 +153,14 @@ You can use the following query params on /books/:
 
 
 
-?search=tolkien → matches title or author
-?ordering=published\\\\\\\\\\\\\\\_date → ascending
-?ordering=-title → descending by title
-?published\\\\\\\\\\\\\\\_date=2001 → exact match filter
+- ?search=tolkien → matches title or author
+- ?ordering=published\\\\\\\\\\\\\\\_date → ascending
+- ?ordering=-title → descending by title
+- ?published\\\\\\\\\\\\\\\_date=2001 → exact match filter
 
 ---
 
-🧑‍💻 Author
+🧑‍💻 **Author**
 
 Atharva Zalkikar
 GitHub
