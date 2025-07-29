@@ -75,11 +75,11 @@ cd bookexplorer-backend
 
 python -m venv venv
 
-\# On Windows:
+\\# On Windows:
 
-venv\\Scripts\\activate
+venv\\\\Scripts\\\\activate
 
-\# On Mac/Linux:
+\\# On Mac/Linux:
 
 source venv/bin/activate
 
@@ -111,11 +111,12 @@ python manage.py runserver
 ---
 
 
+
 🔐 **Authentication**
 
-- All GET and POST endpoints are publicly accessible.
-- DELETE and PUT operations on books require authentication and are restricted to staff/admin users.
-- Authentication system is DRF-ready (token-based or session-based login support).
+* All GET and POST endpoints are publicly accessible.
+* DELETE and PUT operations on books require authentication and are restricted to staff/admin users.
+* Authentication system is DRF-ready (token-based or session-based login support).
 
 ---
 
@@ -142,10 +143,12 @@ python manage.py runserver
 | `/books/<id>/`           | `PUT/PATCH` | Update a book                          | ✅ Yes (Auth)  |
 
 
+
 ---
 
 
-##📌**Filtering, Search, and Ordering**
+
+\##📌**Filtering, Search, and Ordering**
 
 
 
@@ -153,17 +156,17 @@ You can use the following query params on /books/:
 
 
 
-- ?search=tolkien → matches title or author
-- ?ordering=published\\\\\\\\\\\\\\\_date → ascending
-- ?ordering=-title → descending by title
-- ?published\\\\\\\\\\\\\\\_date=2001 → exact match filter
+* ?search=tolkien → matches title or author
+* ?ordering=published\_date → ascending
+* ?ordering=-title → descending by title
+* ?published\_date=2001 → exact match filter
 
 ---
 
 🧑‍💻 **Author**
 
 Atharva Zalkikar
-GitHub
+[GitHub](https://github.com/AtharvaZalkikar/bookexplorer-backend)
 
 ---
 
@@ -172,13 +175,4 @@ GitHub
 ✅ Backend API completed with testing
 🎨 React / Tailwind frontend integration (up next!)
 🌐 Deployment to global server
-
-
-
-
-
-
-
-
-
 
