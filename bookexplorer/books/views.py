@@ -9,6 +9,14 @@ from .models import Book
 from .serializers import BookSerializer
 from .utils import fetch_book_data_from_isbn
 
+from rest_framework.permissions import AllowAny
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+
 # =============================================
 # 📚 BookViewSet - Handles listing, filtering, editing books
 # =============================================
@@ -22,6 +30,22 @@ class BookViewSet(viewsets.ModelViewSet):
     filterset_fields = ['published_date']
     search_fields = ['title', 'author']
     ordering_fields = ['published_date', 'title']
+
+    def get_queryset(self):
+        # Return books only owned by the requesting user
+        user = self.request.user
+        if not user.is_authenticated:
+            return Book.objects.none()
+        if user.is_superuser:  # ✅ superusers see all books
+            return Book.objects.all().order_by('-created_at')
+
+        # ✅ normal users see only their own books
+        else:
+            return Book.objects.none()
+
+    def perform_create(self, serializer):
+        # Set the owner to the logged-in user on book creation
+        serializer.save(owner=self.request.user)
 
     def destroy(self, request, *args, **kwargs):
         if not request.user.is_staff:
@@ -79,8 +103,9 @@ class FetchAndSaveBookView(APIView):
 # 🔎 SearchOpenLibraryView - Search by title (returns top 15 results)
 # =============================================
 class SearchOpenLibraryView(APIView):
+    permission_classes = [AllowAny]  # ✅ open to public access (only for this endpoint)
     def get(self, request):
-        title = request.query_params.get('title')
+        title = request.query_params.get('title', '').strip()
         if not title:
             return Response({"error": "Title query param is required."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -92,28 +117,65 @@ class SearchOpenLibraryView(APIView):
             return Response({"error": "Failed to fetch from Open Library"}, status=status.HTTP_502_BAD_GATEWAY)
 
         data = response.json()
+        docs = data.get('docs', [])
         results = []
 
-        for doc in data.get('docs', [])[:15]:
+        for doc in docs[:15]:
             title = doc.get("title")
             author = ", ".join(doc.get("author_name", [])) if doc.get("author_name") else "Unknown"
             published_year = doc.get("first_publish_year", "Unknown")
+
+            # ISBN handling
             isbn_list = doc.get("isbn", [])
             isbn = isbn_list[0] if isbn_list else None
 
-            # Cover Image from OLID fallback
-            cover_id = doc.get("cover_edition_key") or (doc.get("edition_key") or [None])[0]
-            cover_url = f"https://covers.openlibrary.org/b/olid/{cover_id}-L.jpg" if cover_id else None
+            # # Cover Image from OLID fallback
+            # cover_id = doc.get("cover_edition_key") or (doc.get("edition_key") or [None])[0]
+            # cover_url = f"https://covers.openlibrary.org/b/olid/{cover_id}-L.jpg" if cover_id else None
+
+            # Cover handling (try ISBN first, then OLID)
+            cover_url = None
+            if isbn_list:
+                cover_url = f"https://covers.openlibrary.org/b/isbn/{isbn_list[0]}-L.jpg"
+            if not cover_url:
+                cover_id = doc.get("cover_edition_key") or (doc.get("edition_key") or [None])[0]
+                if cover_id:
+                    cover_url = f"https://covers.openlibrary.org/b/olid/{cover_id}-L.jpg"
+
+            # inside your loop
+            work_id = doc.get("key")  # e.g. "/works/OL82563W"
+            description = None
+
+            if work_id:
+                try:
+                    work_url = f"https://openlibrary.org{work_id}.json"
+                    work_res = requests.get(work_url, timeout=5)
+                    if work_res.status_code == 200:
+                        work_data = work_res.json()
+                        if isinstance(work_data.get("description"), dict):
+                            description = work_data["description"].get("value")
+                        elif isinstance(work_data.get("description"), str):
+                            description = work_data["description"]
+                except Exception:
+                    description = None
+
 
             results.append({
                 "title": title,
                 "author": author,
                 "published_year": published_year,
                 "isbn": isbn,
-                "cover_url": cover_url
+                "cover_url": cover_url,
+                "all_isbns": isbn_list,  # 🔑 store all editions
+                "subjects": doc.get("subject", []),
+                "publisher": ", ".join(doc.get("publisher", [])[:2]),  # only first 2 publishers
+                "description": description,  # added preview
             })
 
-        return Response(results)
+        return Response({
+            "total_results": len(docs),
+            "results": results
+        })
 
 
 # =============================================
@@ -140,3 +202,49 @@ class SaveBookFromSearchView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# ==========================================================================================
+
+# views.py
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email
+    })
+
+# ==========================================================================================
+
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]   # ✅ VERY IMPORTANT
+
+    def post(self, request):
+        username = request.data.get("username")
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        if not username or not password:
+            return Response(
+                {"error": "Username and password are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Username already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        token, _ = Token.objects.get_or_create(user=user)
+
+        return Response(
+            {"message": "User registered successfully", "token": token.key},
+            status=status.HTTP_201_CREATED,
+        )
